@@ -98,3 +98,48 @@ hg获取代码包并安装必要go包
 ![](img/2.png)
 效果
 ![](img/7.png)
+### 使用go写第一个包，做第一次测试
+```
+mkdir $GOPATH/src/github.com/weltloose/stringutil
+cd $GOPATH/src/github.com/weltloose/stringutil
+cat > reverse.go
+package stringutil
+
+func Reverse(s string) string{
+        r := []rune(s)
+        for i,j := 0, len(r) - 1; i < len(r) / 2; i, j = i + 1, j - 1{
+                r[i], r[j] = r[j], r[i]
+        }
+        return string(r)
+}
+EOF
+```
+测试：
+```
+cat > reverse_test.go
+package stringutil
+
+import "testing"
+
+func TestReverse(t *testing.T){
+        cases := []struct {
+                in, want string
+        }{
+                {"Hello, world", "dlrow ,olleH"},
+                {"Hello, 世界", "界世 ,olleH"},
+                {"", ""},
+        }
+        for _,c := range cases {
+                got := Reverse(c.in)
+                if got != c.want{
+                        t.Errorf("Reverse(%q) == %q, want %q", c.in, got, c.want)
+                }
+        }
+}
+EOF
+```
+执行
+```
+go test
+```
+![](img/9.png)
